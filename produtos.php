@@ -2,28 +2,26 @@
         <div class="col-lg-3 col-6">
 
         <h1>
-            Vendas
+            Produtos
         </h1>
         </div>
 
           <!-- /.col-md-6 -->
         </div></div>   
-        <!-- /.row -->
         <?php
 // Variavel da pesquisa 
 $txt_pesquisa = (isset($_POST['txt_pesquisa']))?$_POST['txt_pesquisa']:"";
 
 ?>
 
-
-<header>
+        <header>
     <h3><i class="bi bi-truck"></i> </h3>
 </header>
 <div>
-    <a class="btn btn-outline-secondary mb-2" href="?menuop=cad-venda"><i class="bi bi-person-plus-fill"></i> Novo Produto</a>
+    <a class="btn btn-outline-secondary mb-2" href="?menuop=cad-produto"><i class="bi bi-person-plus-fill"></i> Novo Produto</a>
 </div>
 <div>
-    <form action="index.php?menuop=vendas" method="post">
+    <form action="index.php?menuop=produtos" method="post">
         <div class="input-group">
             <input class="form-control" type="text" name="txt_pesquisa" value="<?=$txt_pesquisa?>">
             <button class="btn btn-outline-success btn-sm" type="submit"><i class="bi bi-search"></i> Pesquisar</button>
@@ -40,11 +38,11 @@ $txt_pesquisa = (isset($_POST['txt_pesquisa']))?$_POST['txt_pesquisa']:"";
                 <i class="bi bi-star-fill"></i>
             </th>
             <th>ID produto</th>
-            <th>ID funcionario</th>
-            <th>Nome</th>
-            <th>Data venda</th>
+            <th>Nome Produto</th>
+            <th>Descrição do Produto</th>
+            <!--<th>Qtde</th>-->
             <th>Editar</th>
-            <th>Excluir</th>
+            <th>excluir</th>
         </tr>
     </thead>
     <tbody>
@@ -56,18 +54,14 @@ $txt_pesquisa = (isset($_POST['txt_pesquisa']))?$_POST['txt_pesquisa']:"";
             
 
             $sql = "SELECT 
-            idVenda,
-
-            v.idFuncionario,
-            nomeFuncionario,
-            DATE_FORMAT(dtVenda, '%d/%m/%Y') AS dtVenda
-            FROM tbvendas AS  v
-            inner join tbfuncionarios AS f
-            on v.idFuncionario=f.idFuncionario
+            idProduto,
+            nomeProduto,
+            descricaoProduto
+            FROM tbprodutos 
             WHERE 
-            idVenda= '{$txt_pesquisa}' or
-            dtVenda LIKE '%{$txt_pesquisa}%' or
-            nomeFuncionario LIKE '%{$txt_pesquisa}%'
+            idProduto = '{$txt_pesquisa}' or
+            nomeProduto LIKE '%{$txt_pesquisa}%' or
+            descricaoProduto LIKE '%{$txt_pesquisa}%'
             ";
            //echo $sql;
             $rs = mysqli_query($conexao,$sql) 
@@ -80,17 +74,16 @@ $txt_pesquisa = (isset($_POST['txt_pesquisa']))?$_POST['txt_pesquisa']:"";
         ?>
         <tr>
             
-            <td><?=$dados['idVenda']?></td>
-            <td class="text-nowrap"><?=$dados['idVenda']?></td>
-            <td class="text-nowrap"><?=$dados['idFuncionario']?></td>
-            <td class="text-nowrap"><?=$dados['nomeFuncionario']?></td>
-            <td class="text-nowrap"><?=$dados['dtVenda']?></td>
+            <td><?=$dados['idProduto']?></td>
+            <td class="text-nowrap"><?=$dados['idProduto']?></td>
+            <td class="text-nowrap"><?=$dados['nomeProduto']?></td>
+            <td class="text-nowrap"><?=$dados['descricaoProduto']?></td>
             <td class="text-center">
-                <a class="btn btn-outline-warning btn-sm" href="index.php?menuop=editar-venda&idVenda=<?=$dados['idVenda']?>"><i class="bi bi-pencil-square"></i></a>
+                <a class="btn btn-outline-warning btn-sm" href="index.php?menuop=editar-produto&idProduto=<?=$dados['idProduto']?>"><i class="bi bi-pencil-square"></i></a>
                 
             </td>
             <td class="text-center">
-                <a class="btn btn-outline-danger btn-sm" href="index.php?menuop=excluir-venda&idVenda=<?=$dados['idVenda']?>"><i class="bi bi-trash-fill"></i></a>    
+                <a class="btn btn-outline-danger btn-sm" href="index.php?menuop=excluir-produto&idProduto=<?=$dados['idProduto']?>"><i class="bi bi-trash-fill"></i></a>    
             </td>
             
 
@@ -105,7 +98,7 @@ $txt_pesquisa = (isset($_POST['txt_pesquisa']))?$_POST['txt_pesquisa']:"";
 <ul class="pagination justify-content-center">
 <?php
 
-        $sqlTotal = "SELECT idVenda FROM tbvendas";
+        $sqlTotal = "SELECT idProduto FROM tbprodutos";
         $qrTotal = mysqli_query($conexao,$sqlTotal) or die(mysqli_error($conexao));
         $numTotal = mysqli_num_rows($qrTotal);
 
@@ -113,11 +106,11 @@ $txt_pesquisa = (isset($_POST['txt_pesquisa']))?$_POST['txt_pesquisa']:"";
 
         echo "<li class='page-item'><span class='page-link'>Total de registros: " . $numTotal . " </span></li> ";
 
-        echo '<li class="page-item"><a class="page-link" href="?menuop=vendas&pagina=1">Primeira Pagina</a></li>';
+        echo '<li class="page-item"><a class="page-link" href="?menuop=protuos&pagina=1">Primeira Pagina</a></li>';
 
         if($pagina>6){
             ?>
-            <li class="page-item"><a class="page-link" href="?menuop=vendas&pagina=<?php echo $pagina-1?>"><<</a></li>
+            <li class="page-item"><a class="page-link" href="?menuop=produtos&pagina=<?php echo $pagina-1?>"><<</a></li>
             <?php
         }
 
@@ -128,7 +121,7 @@ $txt_pesquisa = (isset($_POST['txt_pesquisa']))?$_POST['txt_pesquisa']:"";
             if($i==$pagina){
                 echo "<li class='page-item active'><span class='page-link'>$i</span></li>";
             }else{
-                echo "<li class='page-item'><a class='page-link' href=\"?menuop=vendas&pagina={$i}\"> {$i} </a></li>";
+                echo "<li class='page-item'><a class='page-link' href=\"?menuop=produtos&pagina={$i}\"> {$i} </a></li>";
 
             }
            }
@@ -136,10 +129,10 @@ $txt_pesquisa = (isset($_POST['txt_pesquisa']))?$_POST['txt_pesquisa']:"";
 
         if($pagina<$totalPagina-5){
             ?>
-            <li class="page-item"><a class="page-link" href="?menuop=vendas&pagina=<?php echo $pagina+1?>">>></a></li>
+            <li class="page-item"><a class="page-link" href="?menuop=produtos&pagina=<?php echo $pagina+1?>">>></a></li>
             <?php
         }
-        echo "<li class='page-item'> <a class='page-link' href=\"?menuop=vendas&pagina=$totalPagina\">Ultima Pagina</a></li>";
+        echo "<li class='page-item'> <a class='page-link' href=\"?menuop=produtos&pagina=$totalPagina\">Ultima Pagina</a></li>";
 
 
 ?>
